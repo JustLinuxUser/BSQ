@@ -13,6 +13,7 @@ int	file_len(char * fname)
 	size = 0;
 	while(read(fd, &c, 1))
 		size++;
+	close(fd);
 	return (size);
 }
 
@@ -33,27 +34,20 @@ int	is_whitespace(char c)
 	return(0);
 }
 
-long long	ft_atoll(char *str, int *iter)
+int	ft_atoi(char *str, int *iter)
 {
-	int			sign;
-	long long	result;
+	int	result;
 
-	iter = 0;
-	sign = 1;
 	result = 0;
 	skip_whitespace(str, iter);
-	while (str[*iter] == '+' || str[*iter] == '-')
-	{
-		if (str[*iter] == '-')
-			sign *= -1;
-		iter++;
-	}
+	if (str[*iter] == '+' || str[*iter] == '-')
+		return (-1);
 	while (str[*iter] >= '0' && str[*iter] <= '9')
 	{
 		result = result * 10 + str[*iter] - '0';
 		iter++;
 	}
-	return (result * sign);
+	return (result);
 }
 
 int shift_args(int *argc, char ***argv)
@@ -65,11 +59,39 @@ int shift_args(int *argc, char ***argv)
 	return (0);
 }
 
+int	go_to_next_line(char **str)
+{
+	int	i;
+
+	i = 0;
+	while (*str[i] != '\n' )
+	{
+		if (*str[i] == 0)
+			return (-1);
+		i++;
+	}
+	*str += i;
+	return (0);
+}
+
 int main(int argc, char **argv)
 {
-	while (argc >= 1)
+	int f_size;
+	int	fd;
+	int	line;
+	char *f_name;
+	char *file_str;
+
+	if (argc != 2)
 	{
-		shift_args(&argc, &argv);
-		printf("argc: %i argv %s\n", argc, *argv);
+		printf("Error, provide 1 arg\n");
+		return (-1);
 	}
+	shift_args(&argc, &argv);
+	f_name = *argv;
+	f_size = file_len(f_name);
+	fd = open(f_name, O_RDONLY);
+	file_str = malloc(sizeof(char) * f_size);
+	read(fd, file_str, f_size);
+	printf("%s", file_str);
 }
