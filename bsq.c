@@ -86,6 +86,17 @@ int	find_sq(char **str, int len, int width)
 	return (0);
 }
 
+void	parse_first_line(int *iter, char *file_str, char controls[3])
+{
+	controls[0] = file_str[*iter];
+	(*iter)++;
+	controls[1] = file_str[*iter];
+	(*iter)++;
+	controls[2] = file_str[*iter];
+	(*iter)++;
+	(*iter)++;
+}
+
 int	*parse_file(char **file_str, char ***map)
 {
 	int		iter;
@@ -95,19 +106,14 @@ int	*parse_file(char **file_str, char ***map)
 	int		line_iter;
 	char	controls[3];
 
-	*map = malloc(sizeof (char *) * 100);
 	line_iter = 0;
 	line = 0;
 	iter = 0;
-	size = malloc(sizeof (int) * 2);
 	len = ft_atoi(*file_str, &iter);
-	controls[0] = (*file_str)[iter];
-	iter++;
-	controls[1] = (*file_str)[iter];
-	iter++;
-	controls[2] = (*file_str)[iter];
-	iter++;
-	iter++;
+	*map = malloc(sizeof (char *) * len);
+	size = malloc(sizeof (int) * 2);
+	parse_first_line(&iter, *file_str, controls);
+	printf("%.3s\n", controls);
 	while (0 != (*file_str)[iter])
 	{
 		line_iter = 0;
